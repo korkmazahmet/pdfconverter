@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- jsPDF kütüphanesini dahil edin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <img id="showImg">
+   
+    <div class="button">
+        <div class="upload">
+            <input type="file" onchange="loadFile(event)" name="" accept=".png, .jpg, .jpeg">Fotoğraf Yükle
+        </div>
+        <button onclick="pdfDown()">Pdf'i İndir</button>
+    </div>
+</div>
+
+<script>
+    var newImage, showImg;
+
+    // Dosya yüklendiğinde çağrılan fonksiyon
+    function loadFile(event) {
+        // showImg elementini seç
+        showImg = document.getElementById("showImg");
+
+        // Seçilen dosyayı URL.createObjectURL ile geçici bir URL'ye çevir ve img elementine ata
+        showImg.src = URL.createObjectURL(event.target.files[0]);
+
+        // Yeni bir img elementi oluştur ve aynı geçici URL'yi ona ata
+        newImage = document.createElement('img');
+        newImage.src = URL.createObjectURL(event.target.files[0]);
+
+        // Görüntü yüklendikten sonra geçici URL'yi serbest bırak
+        showImg.onload = function() {
+            URL.revokeObjectURL(showImg.src);
+        }
+    }
+
+    // PDF oluşturma ve indirme fonksiyonu
+    function pdfDown() {
+        console.log(newImage); // Konsola newImage değişkenini yazdır (hata ayıklama için)
+
+        // Yeni bir jsPDF nesnesi oluştur
+        var doc = new jsPDF();
+
+        // newImage elementini PDF'e ekle
+        doc.addImage(newImage, 10, 10);
+
+        // PDF'i ImgToPDF.pdf ismiyle kaydet
+        doc.save('ImgToPDF.pdf');
+    }
+</script>
+</body>
+</html>
